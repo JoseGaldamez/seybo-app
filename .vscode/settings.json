@@ -1,0 +1,17 @@
+{
+    "workbench.colorCustomizations": {
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#bfc997",
+        "statusBar.background": "#aab875",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#94a555",
+        "statusBarItem.remoteBackground": "#aab875",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#aab875",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#aab87599",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#aab875",
+    "java.compile.nullAnalysis.mode": "automatic"
+}
