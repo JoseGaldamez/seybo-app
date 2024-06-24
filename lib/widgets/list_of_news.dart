@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:radioseiboapp/models/news.model.dart';
+import 'package:radioseiboapp/widgets/youtube_banner.dart';
 
 import '../screens/new_screen.dart';
 import '../services/firebase.dart';
@@ -14,77 +16,79 @@ class ListOfNews extends StatefulWidget {
 }
 
 class _ListOfNewsState extends State<ListOfNews> {
+  List<NewsFirebase> _listOfNews = [];
+  bool _loading = true;
+
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getNotasFromFirebase(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-
-          final newsData = snapshot.data;
-
-          if (newsData == null) {
-            return const Center(
-              child: Text('No hay noticias'),
-            );
-          }
-
-          return ListView.builder(
-              itemCount: newsData.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                NewsScreen(noticia: newsData[index])))
-                  },
-                  child: NewCard(
-                    noticia: newsData[index],
-                  ),
-                );
-              });
-        });
+  void initState() {
+    super.initState();
+    _handleRefresh();
   }
 
-  // Future<void> _dialogBuilder(BuildContext context) {
-  //   return showDialog<void>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         backgroundColor: Colors.white,
-  //         title: const Text(
-  //           'En construcción..',
-  //           style: TextStyle(fontWeight: FontWeight.bold),
-  //         ),
-  //         content: const Text(
-  //           'Traer las notas del sitio web, es un trabajo que está en construcción, las que ve son solo un ejemplo de como se podrían ver...',
-  //           style: TextStyle(fontSize: 15),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             style: TextButton.styleFrom(
-  //               textStyle: Theme.of(context).textTheme.labelLarge,
-  //             ),
-  //             child: const Text('Entiendo'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           )
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      if (_listOfNews.isEmpty) {
+        return const Center(
+          child:
+              Text('No se econtraron noticias, revise su conexión a internet'),
+        );
+      } else {
+        return RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: ListView.builder(
+              itemCount: _listOfNews.length,
+              itemBuilder: (context, index) {
+                return index != 1
+                    ? GestureDetector(
+                        onTap: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      NewsScreen(noticia: _listOfNews[index])))
+                        },
+                        child: NewCard(
+                          noticia: _listOfNews[index],
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          const YoutubeBanner(),
+                          GestureDetector(
+                            onTap: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NewsScreen(
+                                          noticia: _listOfNews[index])))
+                            },
+                            child: NewCard(
+                              noticia: _listOfNews[index],
+                            ),
+                          )
+                        ],
+                      );
+              }),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _loading = true;
+    });
+    // Simulate network fetch or database query
+    List<NewsFirebase> list = await getNotasFromFirebase();
+    // Update the list of items and refresh the UI
+    setState(() {
+      _loading = false;
+      _listOfNews = list;
+    });
+  }
 }

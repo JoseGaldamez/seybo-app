@@ -106,6 +106,11 @@ class AboutScreen extends StatelessWidget {
             ),
             const SizedBox(
               height: 50,
+            ),
+            Container(
+              padding: const EdgeInsets.all(30),
+              decoration: BoxDecoration(color: Colors.grey[100]),
+              child: const Text("Made with ♥ by Jose Galdamez"),
             )
           ],
         ),

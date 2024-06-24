@@ -12,6 +12,7 @@ class NewsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           title: const Text(
             'Volver',
             style: TextStyle(fontSize: 16),
@@ -23,7 +24,7 @@ class NewsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CachedNetworkImage(
-                height: 230,
+                height: MediaQuery.of(context).size.width * 0.5,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: noticia.image,
@@ -102,10 +103,28 @@ class NewsScreen extends StatelessWidget {
   }
 
   List<Widget> _interpretHtml(String html) {
+
     final List<Widget> widgets = [];
     final List<String> lines = html.split('\n');
     for (final line in lines) {
-      if (line.contains('<p>')) {
+
+    if (line.contains('<img') && line.contains('<p>')) {
+      // Cuando las imagenes vienen dentro de un P
+          List<String> listOfImageInP = html.split('<img');
+
+          for (var imageLink in listOfImageInP) {
+            List<String> imageInP = imageLink.split('src="');
+            if (imageInP.length > 1) {
+              String ulrImage = imageInP[1].split('"')[0];
+
+              widgets.add(CachedNetworkImage(
+                imageUrl: ulrImage,
+              ));
+            }
+          } 
+
+        } else if (line.contains('<p>')){
+
         widgets.add(Text(
           line
               .replaceAll("<p>", "")
@@ -115,10 +134,11 @@ class NewsScreen extends StatelessWidget {
               .replaceAll("<em>", "")
               .replaceAll("</em>", "")
               .replaceAll("<br>", "")
+              .replaceAll("&nbsp;", "")
               .replaceAll("<br />", ""),
           style: const TextStyle(fontSize: 16),
         ));
-      } else if (line.contains('<img')) {
+        } else if (line.contains('<img')) {
         final src = line.split('src="')[1].split('"')[0];
         widgets.add(CachedNetworkImage(
           imageUrl: src,
@@ -132,7 +152,7 @@ class NewsScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: Text(text, style: const TextStyle(color: Colors.blue)),
             )));
-      }
+      } 
     }
     return widgets;
   }

@@ -24,7 +24,7 @@ class _PlayerRadioSeyboState extends State<PlayerRadioSeybo> {
                 Container(
                   margin: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(50),
                       color: AppColors.primaryBlueWithTransparent),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.start,

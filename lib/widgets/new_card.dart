@@ -17,13 +17,14 @@ class NewCard extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Colors.white),
         child: Column(
+              
           children: [
             Container(
               alignment: Alignment.topRight,
               child: Stack(
                 children: [
                   CachedNetworkImage(
-                    height: 230,
+                    height: MediaQuery.of(context).size.width * 0.5,
                     width: double.infinity,
                     fit: BoxFit.cover,
                     imageUrl: noticia.image,
@@ -58,6 +59,7 @@ class NewCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       noticia.title,
